@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[SelectionBase]
 public class Taco : MonoBehaviour
 {
     public Rigidbody whiteBallRb; //Rigidbody de la bola blanca
+    public Transform tacoPos; //Transform del taco
     public float shootForce; //Fuerza de tiro
 
     private Camera cam; //Main Camera
@@ -18,20 +20,48 @@ public class Taco : MonoBehaviour
 
     void Update()
     {
-        transform.LookAt(whiteBallRb.transform, Vector3.up); //Mirar con el taco hacia la bola blanca
-        
-        Ray ray = cam.ScreenPointToRay(Input.mousePosition); //ScreenPointToRay convierte una coordenada de la pantalla a un rayo
-        //Dispara el rayo
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            transform.position = new Vector3(hit.point.x, 1f, hit.point.z); //Mueve el taco a la posición del mouse, pero Y siempre es fija
+            print("Stop white ball");
+            whiteBallRb.velocity = Vector3.zero;
         }
 
-        if (Input.GetMouseButtonDown(0))
+        //Si la bola blanca está detenida, entonces puede interactuar con ella
+        if (whiteBallRb.velocity.magnitude <= 0.05f)
         {
-            whiteBallRb.velocity = Vector3.zero; //Ponemos el velocity de la bola blanca en 0 cada que tiramos
-            whiteBallRb.transform.rotation = transform.rotation; //rotar la bola en la misma dirección que apunta el taco
-            whiteBallRb.AddForce(whiteBallRb.transform.forward.normalized * shootForce * whiteBallRb.mass, ForceMode.Force);
+            tacoPos.gameObject.SetActive(true);
+            tacoPos.transform.LookAt(whiteBallRb.transform, Vector3.up); //Mirar con el taco hacia la bola blanca
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition); //ScreenPointToRay convierte una coordenada de la pantalla a un rayo
+                                                                 //Dispara el rayo
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                /*Esto no funciona porque hace el clamp en un cuadrado de 5x5, en vez de un área circular de radio 5
+                float clampedX, clampedZ;
+                clampedX = Mathf.Clamp(hit.point.x, whiteBallRb.transform.position.x - 5f, whiteBallRb.transform.position.x + 5f);
+                clampedZ = Mathf.Clamp(hit.point.z, whiteBallRb.transform.position.z - 5f, whiteBallRb.transform.position.z + 5f);
+                transform.position = new Vector3(clampedX, 1f, clampedZ); //Mueve el taco a la posición del mouse, pero Y siempre es fija
+                */
+
+                //Aquí se calcula un vector que limita el movimiento del taco en un área circular
+                Vector3 allowedPos = new Vector3(hit.point.x, 1f, hit.point.z) - whiteBallRb.transform.position;
+                allowedPos = Vector3.ClampMagnitude(allowedPos, 5f);
+                tacoPos.transform.position = whiteBallRb.transform.position + allowedPos;
+
+
+                //transform.position = new Vector3(hit.point.x, 1f, hit.point.z); //Mueve el taco a la posición del mouse, pero Y siempre es fija
+            }
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                whiteBallRb.velocity = Vector3.zero; //Ponemos el velocity de la bola blanca en 0 cada que tiramos
+                whiteBallRb.transform.rotation = tacoPos.transform.rotation; //rotar la bola en la misma dirección que apunta el taco
+                whiteBallRb.AddForce(whiteBallRb.transform.forward.normalized * shootForce * whiteBallRb.mass, ForceMode.Impulse); //Dar impulso a la bola
+            }
+        }
+        else
+        {
+            //Desactiva el taco si la bola blanca está en movimiento
+            tacoPos.gameObject.SetActive(false);
         }
     }
 }
