@@ -27,7 +27,7 @@ public class Taco : MonoBehaviour
         }
 
         //Si la bola blanca está detenida, entonces puede interactuar con ella
-        if (whiteBallRb.velocity.magnitude <= 0.05f)
+        if (whiteBallRb.velocity.magnitude <= 0.01f)
         {
             tacoPos.gameObject.SetActive(true);
             tacoPos.transform.LookAt(whiteBallRb.transform, Vector3.up); //Mirar con el taco hacia la bola blanca
