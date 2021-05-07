@@ -19,11 +19,19 @@ public class Billar : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("bola"))
+        if (other.CompareTag("bolasChi"))
         {
             other.gameObject.SetActive(false);
             bolas--;
-            print("menos 1");
+            print(other + "chicas");
+
+        }
+        if (other.CompareTag("bolasGra"))
+        {
+            other.gameObject.SetActive(false);
+            bolas--;
+            print(other + "grandes");
+
         }
 
         if (other.CompareTag("bola8") && bolas == 0)
@@ -37,9 +45,9 @@ public class Billar : MonoBehaviour
             other.gameObject.SetActive(false);
             print("Perdiste");
         }
-        if (other.CompareTag("bolaB"))0 
+        if (other.CompareTag("bolaB"))
         {
-            other.gameObject.transform.position = new Vector3(0.0f,1.0f,0.0f);
+            other.gameObject.transform.position = Vector3.up;
             other.GetComponent<Rigidbody>().velocity = Vector3.zero;
             print("Ups");
         }
