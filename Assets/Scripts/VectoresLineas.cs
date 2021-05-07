@@ -37,7 +37,7 @@ public class VectoresLineas : MonoBehaviour
         if ((Physics.Raycast(ray, out hit, maxDistancia, Bola)))
         {
             Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.cyan);
-            Debug.Log("Did Hit");
+            //Debug.Log("Did Hit");
             lineRenderer.positionCount = 3; //un maximo de pres puntos
 
             lineRenderer.SetPosition(0, transform.position);
