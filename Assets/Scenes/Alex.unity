@@ -628,7 +628,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 841523567}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.52, y: 0, z: 6.63}
+  m_LocalPosition: {x: -0.12, y: 0, z: 9.61}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -678,14 +678,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineRenderer: {fileID: 15029668}
-  dirBola: {fileID: 0}
   maxDistancia: 50
   Bola:
     serializedVersion: 2
     m_Bits: 8
-  bolaPropia:
-    serializedVersion: 2
-    m_Bits: 4294967295
   hoyos:
   - {fileID: 1905808783}
   posMax: {fileID: 841523568}

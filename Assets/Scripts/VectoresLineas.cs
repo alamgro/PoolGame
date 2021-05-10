@@ -6,30 +6,14 @@ public class VectoresLineas : MonoBehaviour
 {
     [SerializeField]
     private LineRenderer lineRenderer;
-    [SerializeField]
-    //private Transform posInicio;
-    //private Transform posBola;
-    private Transform dirBola;
+   // private Transform dirBola;
     [SerializeField]
     private float maxDistancia;
     public LayerMask Bola;
-    public LayerMask bolaPropia;
+    //public LayerMask bolaPropia;
 
     public Transform[] hoyos;
     public Transform posMax;
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-       lineRenderer.positionCount = 1; //un maximo de pres puntos
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     private void FixedUpdate()
     {
@@ -54,41 +38,39 @@ public class VectoresLineas : MonoBehaviour
                 lineRenderer.positionCount++;
                 lineRenderer.positionCount++;
 
-
-
                 lineRenderer.SetPosition(2, hit2.point);
                 lineRenderer.SetPosition(3, hit2.transform.position);
                 lineRenderer.SetPosition(4, hoyos[0].position);
 
+                //print(hit2.transform.position);
                 CalculoVector90(hoyos[0], hit2.transform, posMax);
+                //posMax.position = hit2.transform.position;
             }
             else
             {
                 lineRenderer.positionCount = 2;
-                
             }
 
         }
         else
             lineRenderer.positionCount = 1;
-
-        
     }
-    void CalculoVector90(Transform _hoyoOrigin, Transform _bolaTarget, Transform posMax )
+
+    void CalculoVector90(Transform _hoyoOrigin, Transform _bolaTarget, Transform _posMax)
     {
-        //Vector3 temp;
-       // Collider max;
-        Ray ray = new Ray(_hoyoOrigin.position, _bolaTarget.TransformDirection(Vector3.forward));
+        Vector3 directionVector;
+        Ray ray = new Ray(_hoyoOrigin.position, _bolaTarget.position - _hoyoOrigin.position);
 
-        if(Physics.Raycast(ray, out RaycastHit hit, maxDistancia, Bola))
+        Debug.DrawRay(_hoyoOrigin.position, _bolaTarget.position - _hoyoOrigin.position, Color.blue);
+
+
+        if (Physics.Raycast(ray, out RaycastHit hit, maxDistancia, Bola))
         {
-            Debug.DrawRay(_hoyoOrigin.position, _bolaTarget.TransformDirection(Vector3.forward) * hit.distance, Color.cyan);
+            Debug.DrawRay(_hoyoOrigin.position, _bolaTarget.TransformDirection(Vector3.forward) * hit.distance, Color.black);
 
-            posMax.position = hit.collider.bounds.max;
-            print("ya se movio el max");
-
+            directionVector = (_bolaTarget.position - hit.point).normalized * 2;
+            _posMax.position = directionVector;
+            print("ya se movio el max " + directionVector );
         }
-
     }
-
 }
