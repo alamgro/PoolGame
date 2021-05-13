@@ -15,14 +15,14 @@ public class Taco : MonoBehaviour
     {
         cam = Camera.main;       
         //whiteBall.GetComponent<Rigidbody>().AddForce(whiteBall.transform.forward.normalized * shootForce, ForceMode.Force);
-        print("Game started :D");
+       // print("Game started :D");
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            print("Stop white ball");
+           // print("Stop white ball");
             whiteBallRb.velocity = Vector3.zero;
         }
 

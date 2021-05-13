@@ -395,6 +395,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 202771575757279662, guid: a309dffbe3b89fd438d8590fe2162072, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 202771575757279667, guid: a309dffbe3b89fd438d8590fe2162072, type: 3}
       propertyPath: m_Name
       value: Edge
@@ -682,6 +686,9 @@ MonoBehaviour:
   Bola:
     serializedVersion: 2
     m_Bits: 8
+  BolaBlanca:
+    serializedVersion: 2
+    m_Bits: 0
   hoyos:
   - {fileID: 1905808783}
   posMax: {fileID: 841523568}
@@ -818,6 +825,10 @@ PrefabInstance:
     - target: {fileID: 202771575757279660, guid: a309dffbe3b89fd438d8590fe2162072, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 202771575757279662, guid: a309dffbe3b89fd438d8590fe2162072, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 202771575757279667, guid: a309dffbe3b89fd438d8590fe2162072, type: 3}
       propertyPath: m_Name
@@ -1302,7 +1313,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1905808782}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 15.19, y: 0, z: 9.66}
+  m_LocalPosition: {x: 14.982, y: 1, z: 9.486}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
