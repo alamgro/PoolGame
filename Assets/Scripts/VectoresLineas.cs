@@ -6,6 +6,10 @@ public class VectoresLineas : MonoBehaviour
 {
     [SerializeField]
     private LineRenderer lineRenderer;
+
+    public Material grisRata;
+    public Material rojoSpaidi;
+
     [SerializeField]
     private float maxDistancia;
     public LayerMask Bola;
@@ -16,13 +20,11 @@ public class VectoresLineas : MonoBehaviour
     private Transform hoyoCercano;
     //public Transform posMax;
 
-    private void Update()
-    {
-        
-    }
-
     private void FixedUpdate()
     {
+        lineRenderer.material = grisRata;
+        
+
         Ray ray = new Ray(transform.position, transform.TransformDirection(Vector3.forward)); 
 
         if (Physics.Raycast(ray, out RaycastHit hit, maxDistancia, BolaBlanca))//de Palo a bola blanca
@@ -33,20 +35,20 @@ public class VectoresLineas : MonoBehaviour
             lineRenderer.SetPosition(0, transform.position); //inicio
             lineRenderer.SetPosition(1, hit.point);  //a pelota
 
-            if (Physics.SphereCast(hit.transform.position, 0.42f, transform.TransformDirection(Vector3.forward), out RaycastHit hit2, maxDistancia, Bola))//De bola blanca a Bolas
+            if (Physics.SphereCast(hit.transform.position, 0.40f, transform.TransformDirection(Vector3.forward), out RaycastHit hit2, maxDistancia, Bola))//De bola blanca a Bolas
             {
-                Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit2.distance, Color.red);
+                Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit2.distance, Color.black);
                 /* lineRenderer.positionCount++;
                  lineRenderer.positionCount++;
                  lineRenderer.positionCount++;*/
                 lineRenderer.positionCount = 5;
-                HoyoMasCercano(hit.transform, hoyoCercano);
+                HoyoMasCercano(hit2.transform);
 
                 lineRenderer.SetPosition(2, hit2.point);
                 lineRenderer.SetPosition(3, hit2.transform.position);
                 lineRenderer.SetPosition(4, hoyoCercano.position);
 
-                CalculoVector90(hoyos[0], hit2.transform);
+                CalculoVector90(hoyoCercano, hit2.transform);
             }
             else
                 lineRenderer.positionCount = 2;
@@ -71,36 +73,46 @@ public class VectoresLineas : MonoBehaviour
                 //lineRenderer.SetPosition(5, hitBorde.point);
                 lineRenderer.positionCount = 7;
 
-                lineRenderer.SetPosition(5, hit.point);
-                lineRenderer.SetPosition(6, hitBorde.point * 0.1f);
+                //lineRenderer.SetPosition(5, hit.transform.position); //punto de golpe
 
+                //lineRenderer.
+                lineRenderer.SetPosition(5, _bolaTarget.position); //punto de golpe
+                lineRenderer.SetPosition(6, hitBorde.point);
 
-                /* if(Physics.Raycast(hitBorde.point,  _bolaTarget.position , out RaycastHit hitReversa, maxDistancia, Bola)) //de pared a bola
+                /*
+                 if(Physics.Raycast(hitBorde.point, _bolaTarget.position - hitBorde.point, out RaycastHit hitReversa, maxDistancia)) //de pared a bola
                  {
                      //es ese papi debe de apuntar a la ultima bola
-                     Debug.DrawRay(hitBorde.point, _bolaTarget.position * hitReversa.distance, Color.red);
+                     Debug.DrawRay(hitBorde.point, _bolaTarget.position - hitBorde.point * hitReversa.distance, Color.red);
+                    print("Ray de mesa a bola");
 
-                 }*/
+                 }
+                */
             }
         }
     }//void
 
 
-    void HoyoMasCercano(Transform _peloActual, Transform _hoyoCercano)
+    Transform HoyoMasCercano(Transform _bolaActual)
     {
-        float distancia = 0;
-        float tmp;
-
+        float distanciaMin = 1000; //la mas chica
+        float tmp; //distacia calculando
+        Transform _hoyoCercano = gameObject.transform;
 
         for (int i = 0; i < hoyos.Length; i++)
         {
-            tmp = Vector3.Distance(_peloActual.position, hoyos[i].position);
+            tmp = Vector3.Distance(_bolaActual.position, hoyos[i].position);
 
 
-            if(distancia <= tmp)
+            if(distanciaMin > tmp)
             {
-                _hoyoCercano = hoyos[i];
+                distanciaMin = tmp;
+                hoyoCercano = hoyos[i];
+               // print(hoyoCercano.name);
             }
         }
-    }
+
+        return _hoyoCercano;
+
+    }//void
 }//class
