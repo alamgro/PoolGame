@@ -22,8 +22,10 @@ public class Taco : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-           // print("Stop white ball");
-            whiteBallRb.velocity = Vector3.zero;
+            // print("Stop white ball");
+            //whiteBallRb.velocity = Vector3.zero;
+            whiteBallRb.isKinematic = true;
+            whiteBallRb.isKinematic = false;
         }
 
         //Si la bola blanca est? detenida, entonces puede interactuar con ella
