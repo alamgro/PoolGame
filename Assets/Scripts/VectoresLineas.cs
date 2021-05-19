@@ -35,7 +35,7 @@ public class VectoresLineas : MonoBehaviour
             lineRenderer.SetPosition(0, transform.position); //inicio
             lineRenderer.SetPosition(1, hit.point);  //a pelota
 
-            if (Physics.SphereCast(hit.transform.position, 0.40f, transform.TransformDirection(Vector3.forward), out RaycastHit hit2, maxDistancia, Bola))//De bola blanca a Bolas
+            if (Physics.SphereCast(hit.transform.position, 0.5f, transform.TransformDirection(Vector3.forward), out RaycastHit hit2, maxDistancia, Bola))//De bola blanca a Bolas
             {
                 Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit2.distance, Color.black);
                 /* lineRenderer.positionCount++;

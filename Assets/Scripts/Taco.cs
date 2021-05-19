@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 [SelectionBase]
 public class Taco : MonoBehaviour
@@ -8,14 +9,17 @@ public class Taco : MonoBehaviour
     public Rigidbody whiteBallRb; //Rigidbody de la bola blanca
     public Transform tacoPos; //Transform del taco
     public float shootForce; //Fuerza de tiro
+    public float forceMultiplier;
+    public TextMeshProUGUI fuerzaTiroUI;
 
     private Camera cam; //Main Camera
 
     void Start()
     {
         cam = Camera.main;       
+        fuerzaTiroUI.text = "Fuerza de tiro: " + (int)shootForce + "N";
         //whiteBall.GetComponent<Rigidbody>().AddForce(whiteBall.transform.forward.normalized * shootForce, ForceMode.Force);
-       // print("Game started :D");
+        // print("Game started :D");
     }
 
     void Update()
@@ -33,6 +37,9 @@ public class Taco : MonoBehaviour
         {
             tacoPos.gameObject.SetActive(true);
             tacoPos.transform.LookAt(whiteBallRb.transform, Vector3.up); //Mirar con el taco hacia la bola blanca
+
+            ForceAdjustment();
+
             Ray ray = cam.ScreenPointToRay(Input.mousePosition); //ScreenPointToRay convierte una coordenada de la pantalla a un rayo
                                                                  //Dispara el rayo
             if (Physics.Raycast(ray, out RaycastHit hit))
@@ -66,5 +73,19 @@ public class Taco : MonoBehaviour
             tacoPos.gameObject.SetActive(false);
         }
 
+    }
+
+    private void ForceAdjustment()
+    {
+        if (Input.GetAxis("Mouse ScrollWheel") != 0f) // forward
+        {
+            shootForce += (Input.GetAxis("Mouse ScrollWheel") * forceMultiplier);
+            if (shootForce < 1.0f)
+                shootForce = 1.0f;
+            else if (shootForce > 100.0f)
+                shootForce = 100.0f;
+            fuerzaTiroUI.text = "Fuerza de tiro: " + (int)shootForce + "N";
+            print(shootForce);
+        }
     }
 }

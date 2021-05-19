@@ -27,8 +27,8 @@ public class BallSFX : MonoBehaviour
     {
         if (!collision.gameObject.CompareTag("Table") && readyToPlay)
         {
-            audioController.PlayOneShot(audioClip);
-            print("D:");
+            if(rb.velocity.magnitude >= 0.5f)
+                audioController.PlayOneShot(audioClip);
         }
     }
 
