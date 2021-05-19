@@ -11,7 +11,7 @@ public class Taco : MonoBehaviour
     public float shootForce; //Fuerza de tiro
     public float forceMultiplier;
     public TextMeshProUGUI fuerzaTiroUI;
-
+    public GameObject Panel;
     private Camera cam; //Main Camera
 
     void Start()
@@ -71,6 +71,14 @@ public class Taco : MonoBehaviour
         {
             //Desactiva el taco si la bola blanca est? en movimiento
             tacoPos.gameObject.SetActive(false);
+        }
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+
+            if (Panel.activeInHierarchy)
+                Panel.SetActive(false);
+            else
+                Panel.SetActive(true);
         }
 
     }
