@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class Billar : MonoBehaviour
 {
@@ -43,6 +45,7 @@ public class Billar : MonoBehaviour
         if(other.CompareTag("bola8") && bolas > 0)
         {
             other.gameObject.SetActive(false);
+            SceneManager.LoadScene("Alex");
             print("Perdiste");
         }
         if (other.CompareTag("bolaB"))
