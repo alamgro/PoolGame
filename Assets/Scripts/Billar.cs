@@ -39,6 +39,7 @@ public class Billar : MonoBehaviour
         if (other.CompareTag("bola8") && bolas == 0)
         {
             other.gameObject.SetActive(false);
+            SceneManager.LoadScene("Looby");
             print("Ganaste");
 
         }
