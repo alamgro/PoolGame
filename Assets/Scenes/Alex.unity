@@ -3531,8 +3531,16 @@ PrefabInstance:
       value: bolasChi
       objectReference: {fileID: 0}
     - target: {fileID: 1803288156942800864, guid: 1639cb814c379d44a9524d605bc41b0d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1803288156942800864, guid: 1639cb814c379d44a9524d605bc41b0d, type: 3}
       propertyPath: m_TagString
       value: bolasGra
+      objectReference: {fileID: 0}
+    - target: {fileID: 1803288156942800878, guid: 1639cb814c379d44a9524d605bc41b0d, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1803288157097791501, guid: 1639cb814c379d44a9524d605bc41b0d, type: 3}
       propertyPath: m_TagString
