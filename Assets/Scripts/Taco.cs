@@ -8,10 +8,11 @@ public class Taco : MonoBehaviour
 {
     public Rigidbody whiteBallRb; //Rigidbody de la bola blanca
     public Transform tacoPos; //Transform del taco
+    public GameObject predictionBall;
     public float shootForce; //Fuerza de tiro
     public float forceMultiplier;
     public TextMeshProUGUI fuerzaTiroUI;
-    public GameObject Panel;
+    public GameObject controlsPanel;
     private Camera camTopDown; //Main Camera
     private Camera cam3D;
     
@@ -42,45 +43,51 @@ public class Taco : MonoBehaviour
         if (whiteBallRb.velocity.magnitude <= 0.01f)
         {
             tacoPos.gameObject.SetActive(true);
+
             tacoPos.transform.LookAt(whiteBallRb.transform, Vector3.up); //Mirar con el taco hacia la bola blanca
 
-            ForceAdjustment();
+            ForceAdjustment(); //Detectar el ajuste de la fuerza con el Scroll del mouse
 
             if (Input.GetMouseButtonDown(0))
             {
-                whiteBallRb.velocity = Vector3.zero; //Ponemos el velocity de la bola blanca en 0 cada que tiramos
                 whiteBallRb.transform.rotation = tacoPos.transform.rotation; //rotar la bola en la misma direcci?n que apunta el taco
+                whiteBallRb.velocity = Vector3.zero; //Ponemos el velocity de la bola blanca en 0 cada que tiramos
                 whiteBallRb.AddForce(whiteBallRb.transform.forward.normalized * shootForce * whiteBallRb.mass, ForceMode.Impulse); //Dar impulso a la bola
             }
         }
         else
         {
-            //Desactiva el taco si la bola blanca est? en movimiento
+            //Desactiva el taco y la bola de predicción si la bola blanca está en movimiento
             tacoPos.gameObject.SetActive(false);
+            predictionBall.SetActive(false);
         }
         if (Input.GetKeyDown(KeyCode.P))
         {
-
-            if (Panel.activeInHierarchy)
-                Panel.SetActive(false);
+            if (controlsPanel.activeInHierarchy)
+                controlsPanel.SetActive(false);
             else
-                Panel.SetActive(true);
+                controlsPanel.SetActive(true);
         }
 
     }
 
     private void LateUpdate()
     {
+        #region DETECT CAM - 3D OR 2D
         if (GameManager.Manager.isCam3DActive)
         {
-            MoveTacoOn3D();
+            //Mover el taco en entorno 3D
+            MoveTaco(cam3D.transform.position);
         }
         else
         {
-            MoveTacoTopDown();
+            //Mover el taco en entorno 2D - TopDown
+            MoveTaco(camTopDown.ScreenToWorldPoint(Input.mousePosition));
         }
+        #endregion
     }
 
+    //Ajustar la fuerza de la bola con la rueda del mouse
     private void ForceAdjustment()
     {
         if (Input.GetAxis("Mouse ScrollWheel") != 0f) // forward
@@ -91,35 +98,32 @@ public class Taco : MonoBehaviour
             else if (shootForce > 100.0f)
                 shootForce = 100.0f;
             fuerzaTiroUI.text = "Fuerza de tiro: " + (int)shootForce + "N";
-            print(shootForce);
         }
     }
 
-    private void MoveTacoTopDown()
+    private void MoveTaco(Vector3 _targetPos)
     {
-        Ray ray = camTopDown.ScreenPointToRay(Input.mousePosition); //ScreenPointToRay convierte una coordenada de la pantalla a un rayo
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            /*Esto no funciona porque hace el clamp en un cuadrado de 5x5, en vez de un área circular de radio 5
-            float clampedX, clampedZ;
-            clampedX = Mathf.Clamp(hit.point.x, whiteBallRb.transform.position.x - 5f, whiteBallRb.transform.position.x + 5f);
-            clampedZ = Mathf.Clamp(hit.point.z, whiteBallRb.transform.position.z - 5f, whiteBallRb.transform.position.z + 5f);
-            transform.position = new Vector3(clampedX, 1f, clampedZ); //Mueve el taco a la posici?n del mouse, pero Y siempre es fija
-            */
-
-            //Aquí se calcula un vector que limita el movimiento del taco en un área circular
-            Vector3 allowedPos = new Vector3(hit.point.x, 1f, hit.point.z) - whiteBallRb.transform.position;
-            allowedPos = Vector3.ClampMagnitude(allowedPos, 5f);
-            tacoPos.transform.position = whiteBallRb.transform.position + allowedPos;
-
-            //transform.position = new Vector3(hit.point.x, 1f, hit.point.z); //Mueve el taco a la posici?n del mouse, pero Y siempre es fija
-        }
-    }
-
-    private void MoveTacoOn3D()
-    {
-        Vector3 allowedPos = new Vector3(cam3D.transform.position.x, 1f, cam3D.transform.position.z) - whiteBallRb.transform.position;
-        allowedPos = Vector3.ClampMagnitude(allowedPos, 5f);
+        Vector3 allowedPos = new Vector3(_targetPos.x, 1f, _targetPos.z) - whiteBallRb.transform.position;
+        //allowedPos = Vector3.ClampMagnitude(allowedPos, 5f);
+        allowedPos = ClampMagnitude(allowedPos, 4.5f, 7f);
         tacoPos.transform.position = whiteBallRb.transform.position + allowedPos;
+    }
+
+    public static Vector3 ClampMagnitude(Vector3 _vectorToClamp, float minMagnitude, float maxMagnitude)
+    {
+        float inMagnitude = _vectorToClamp.magnitude;
+        if (inMagnitude < minMagnitude)
+        {
+            Vector3 inNormalized = _vectorToClamp / inMagnitude; //equivalent to in.normalized, but slightly faster in this case
+            return inNormalized * minMagnitude;
+        }
+        else if (inMagnitude > maxMagnitude)
+        {
+            Vector3 inNormalized = _vectorToClamp / inMagnitude; //equivalent to in.normalized, but slightly faster in this case
+            return inNormalized * maxMagnitude;
+        }
+
+        // No need to clamp at all
+        return _vectorToClamp;
     }
 }

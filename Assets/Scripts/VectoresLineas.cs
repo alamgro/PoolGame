@@ -17,15 +17,19 @@ public class VectoresLineas : MonoBehaviour
     public LayerMask SinBolaBlanca;
 
     public Transform[] hoyos;
+    public Transform predictionBall;
     private Transform hoyoCercano;
     //public Transform posMax;
+
+    private void Start()
+    {
+    }
 
     private void FixedUpdate()
     {
         lineRenderer.material = grisRata;
         
-
-        Ray ray = new Ray(transform.position, transform.TransformDirection(Vector3.forward)); 
+        Ray ray = new Ray(transform.position, transform.TransformDirection(Vector3.forward));
 
         if (Physics.Raycast(ray, out RaycastHit hit, maxDistancia, BolaBlanca))//de Palo a bola blanca
         {
@@ -35,9 +39,14 @@ public class VectoresLineas : MonoBehaviour
             lineRenderer.SetPosition(0, transform.position); //inicio
             lineRenderer.SetPosition(1, hit.point);  //a pelota
 
-            if (Physics.SphereCast(hit.transform.position, 0.5f, transform.TransformDirection(Vector3.forward), out RaycastHit hit2, maxDistancia, Bola))//De bola blanca a Bolas
+            if (Physics.SphereCast(hit.transform.position, 0.55f, transform.TransformDirection(Vector3.forward), out RaycastHit hit2, maxDistancia, Bola))//De bola blanca a Bolas
             {
                 Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit2.distance, Color.black);
+
+                //Mover la bola de predicción a donde hace hit
+                predictionBall.gameObject.SetActive(true);
+                predictionBall.position = hit2.point + 0.5f * hit2.normal;
+
                 /* lineRenderer.positionCount++;
                  lineRenderer.positionCount++;
                  lineRenderer.positionCount++;*/
@@ -51,7 +60,10 @@ public class VectoresLineas : MonoBehaviour
                 CalculoVector90(hoyoCercano, hit2.transform);
             }
             else
+            {
                 lineRenderer.positionCount = 2;
+                predictionBall.gameObject.SetActive(false);
+            }
         }
         else
             lineRenderer.positionCount = 1;

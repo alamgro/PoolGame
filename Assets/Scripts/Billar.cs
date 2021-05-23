@@ -25,14 +25,14 @@ public class Billar : MonoBehaviour
         {
             other.gameObject.SetActive(false);
             bolas--;
-            print(other + "chicas");
+            //print(other + "chicas");
 
         }
         if (other.CompareTag("bolasGra"))
         {
             other.gameObject.SetActive(false);
             bolas--;
-            print(other + "grandes");
+            //print(other + "grandes");
 
         }
 
