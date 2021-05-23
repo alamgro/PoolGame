@@ -10,6 +10,7 @@ TagManager:
   - bolasChi
   - bolasGra
   - Table
+  - Cam3D
   layers:
   - Default
   - TransparentFX

@@ -11,33 +11,10 @@ public class GameManager : MonoBehaviour
     public static GameManager Manager { get { return _instance; } }
     #endregion
     public string Escena;
-    public GameObject Panel;
+    public GameObject cam3D;
+    public GameObject cam3DController;
 
-    private void Update()
-    {
-        
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            SceneManager.LoadScene("Alex");
-        }
-    }
-
-    public void CambioEscena() 
-    {
-        SceneManager.LoadScene(Escena);
-    }
-    public void Panelloco() 
-    {
-            if (Panel.activeInHierarchy)
-                Panel.SetActive(false);
-          
-    }
-    public void panel2() 
-    {
-          if(Panel.activeInHierarchy == false)
-            Panel.SetActive(true);
-    }
-    
+    public bool isCam3DActive = false;
 
     private void Awake()
     {
@@ -51,5 +28,55 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
         }
     }
+
+    private void Start()
+    {
+        cam3D.SetActive(false);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            isCam3DActive = !cam3D.activeInHierarchy;
+            cam3D.SetActive(isCam3DActive);
+            //Cursor.visible = !isCam3DActive; //Si la cámara 3D está desactivada, se activa el cursor
+
+            if (isCam3DActive)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.None;
+            }
+
+        }
+
+        /*
+        //Esto es para poder mover la cámara 3D solo si presionamos click derecho
+        if (Input.GetMouseButtonDown(1))
+        {
+            cam3DController.SetActive(true);
+        }
+        else if (Input.GetMouseButtonUp(1))
+        {
+            cam3DController.SetActive(false);
+        }*/
+    }
+
+    public void CambioEscena() 
+    {
+        SceneManager.LoadScene(Escena);
+    }
+
     
+
+   
+
 }

@@ -12,11 +12,17 @@ public class Taco : MonoBehaviour
     public float forceMultiplier;
     public TextMeshProUGUI fuerzaTiroUI;
     public GameObject Panel;
-    private Camera cam; //Main Camera
-
+    private Camera camTopDown; //Main Camera
+    private Camera cam3D;
+    
+    private void Awake()
+    {
+        camTopDown = Camera.main;
+        cam3D = GameObject.FindGameObjectWithTag("Cam3D").GetComponent<Camera>();
+    }
     void Start()
     {
-        cam = Camera.main;       
+
         fuerzaTiroUI.text = "Fuerza de tiro: " + (int)shootForce + "N";
         //whiteBall.GetComponent<Rigidbody>().AddForce(whiteBall.transform.forward.normalized * shootForce, ForceMode.Force);
         // print("Game started :D");
@@ -39,26 +45,6 @@ public class Taco : MonoBehaviour
             tacoPos.transform.LookAt(whiteBallRb.transform, Vector3.up); //Mirar con el taco hacia la bola blanca
 
             ForceAdjustment();
-
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition); //ScreenPointToRay convierte una coordenada de la pantalla a un rayo
-                                                                 //Dispara el rayo
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                /*Esto no funciona porque hace el clamp en un cuadrado de 5x5, en vez de un ?rea circular de radio 5
-                float clampedX, clampedZ;
-                clampedX = Mathf.Clamp(hit.point.x, whiteBallRb.transform.position.x - 5f, whiteBallRb.transform.position.x + 5f);
-                clampedZ = Mathf.Clamp(hit.point.z, whiteBallRb.transform.position.z - 5f, whiteBallRb.transform.position.z + 5f);
-                transform.position = new Vector3(clampedX, 1f, clampedZ); //Mueve el taco a la posici?n del mouse, pero Y siempre es fija
-                */
-
-                //Aqu? se calcula un vector que limita el movimiento del taco en un ?rea circular
-                Vector3 allowedPos = new Vector3(hit.point.x, 1f, hit.point.z) - whiteBallRb.transform.position;
-                allowedPos = Vector3.ClampMagnitude(allowedPos, 5f);
-                tacoPos.transform.position = whiteBallRb.transform.position + allowedPos;
-
-
-                //transform.position = new Vector3(hit.point.x, 1f, hit.point.z); //Mueve el taco a la posici?n del mouse, pero Y siempre es fija
-            }
 
             if (Input.GetMouseButtonDown(0))
             {
@@ -83,6 +69,18 @@ public class Taco : MonoBehaviour
 
     }
 
+    private void LateUpdate()
+    {
+        if (GameManager.Manager.isCam3DActive)
+        {
+            MoveTacoOn3D();
+        }
+        else
+        {
+            MoveTacoTopDown();
+        }
+    }
+
     private void ForceAdjustment()
     {
         if (Input.GetAxis("Mouse ScrollWheel") != 0f) // forward
@@ -95,5 +93,33 @@ public class Taco : MonoBehaviour
             fuerzaTiroUI.text = "Fuerza de tiro: " + (int)shootForce + "N";
             print(shootForce);
         }
+    }
+
+    private void MoveTacoTopDown()
+    {
+        Ray ray = camTopDown.ScreenPointToRay(Input.mousePosition); //ScreenPointToRay convierte una coordenada de la pantalla a un rayo
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            /*Esto no funciona porque hace el clamp en un cuadrado de 5x5, en vez de un área circular de radio 5
+            float clampedX, clampedZ;
+            clampedX = Mathf.Clamp(hit.point.x, whiteBallRb.transform.position.x - 5f, whiteBallRb.transform.position.x + 5f);
+            clampedZ = Mathf.Clamp(hit.point.z, whiteBallRb.transform.position.z - 5f, whiteBallRb.transform.position.z + 5f);
+            transform.position = new Vector3(clampedX, 1f, clampedZ); //Mueve el taco a la posici?n del mouse, pero Y siempre es fija
+            */
+
+            //Aquí se calcula un vector que limita el movimiento del taco en un área circular
+            Vector3 allowedPos = new Vector3(hit.point.x, 1f, hit.point.z) - whiteBallRb.transform.position;
+            allowedPos = Vector3.ClampMagnitude(allowedPos, 5f);
+            tacoPos.transform.position = whiteBallRb.transform.position + allowedPos;
+
+            //transform.position = new Vector3(hit.point.x, 1f, hit.point.z); //Mueve el taco a la posici?n del mouse, pero Y siempre es fija
+        }
+    }
+
+    private void MoveTacoOn3D()
+    {
+        Vector3 allowedPos = new Vector3(cam3D.transform.position.x, 1f, cam3D.transform.position.z) - whiteBallRb.transform.position;
+        allowedPos = Vector3.ClampMagnitude(allowedPos, 5f);
+        tacoPos.transform.position = whiteBallRb.transform.position + allowedPos;
     }
 }
