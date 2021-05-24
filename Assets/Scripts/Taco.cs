@@ -111,16 +111,16 @@ public class Taco : MonoBehaviour
 
     public static Vector3 ClampMagnitude(Vector3 _vectorToClamp, float minMagnitude, float maxMagnitude)
     {
-        float inMagnitude = _vectorToClamp.magnitude;
-        if (inMagnitude < minMagnitude)
+        float vecMagnitude = _vectorToClamp.magnitude;
+        if (vecMagnitude < minMagnitude)
         {
-            Vector3 inNormalized = _vectorToClamp / inMagnitude; //equivalent to in.normalized, but slightly faster in this case
-            return inNormalized * minMagnitude;
+            Vector3 vecNormalized = _vectorToClamp / vecMagnitude; //equivalent to _vectorToClamp.normalized, but slightly faster in this case
+            return vecNormalized * minMagnitude;
         }
-        else if (inMagnitude > maxMagnitude)
+        else if (vecMagnitude > maxMagnitude)
         {
-            Vector3 inNormalized = _vectorToClamp / inMagnitude; //equivalent to in.normalized, but slightly faster in this case
-            return inNormalized * maxMagnitude;
+            Vector3 vecNormalized = _vectorToClamp / vecMagnitude; //equivalent to _vectorToClamp.normalized, but slightly faster in this case
+            return vecNormalized * maxMagnitude;
         }
 
         // No need to clamp at all
