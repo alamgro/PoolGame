@@ -33,7 +33,6 @@ public class Billar : MonoBehaviour
             other.gameObject.SetActive(false);
             bolas--;
             //print(other + "grandes");
-
         }
 
         if (other.CompareTag("bola8") && bolas == 0)
@@ -51,8 +50,8 @@ public class Billar : MonoBehaviour
         }
         if (other.CompareTag("bolaB"))
         {
+            GameManager.Manager.StopBall(other.GetComponent<Rigidbody>()); //Función para detener la bola
             other.gameObject.transform.position = Vector3.up;
-            other.GetComponent<Rigidbody>().velocity = Vector3.zero;
             print("Ups");
         }
 

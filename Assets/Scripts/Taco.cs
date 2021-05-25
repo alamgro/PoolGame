@@ -31,15 +31,9 @@ public class Taco : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            // print("Stop white ball");
-            //whiteBallRb.velocity = Vector3.zero;
-            whiteBallRb.isKinematic = true;
-            whiteBallRb.isKinematic = false;
-        }
+        VerifyCameraMode();
 
-        //Si la bola blanca est? detenida, entonces puede interactuar con ella
+        //Si la bola blanca está detenida, entonces puede interactuar con ella
         if (whiteBallRb.velocity.magnitude <= 0.01f)
         {
             tacoPos.gameObject.SetActive(true);
@@ -61,28 +55,17 @@ public class Taco : MonoBehaviour
             tacoPos.gameObject.SetActive(false);
             predictionBall.SetActive(false);
         }
+
+        #region INPUTS
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            //Stop white ball from moving
+            GameManager.Manager.StopBall(whiteBallRb);
+        }
+
         if (Input.GetKeyDown(KeyCode.P))
         {
-            if (controlsPanel.activeInHierarchy)
-                controlsPanel.SetActive(false);
-            else
-                controlsPanel.SetActive(true);
-        }
-
-    }
-
-    private void LateUpdate()
-    {
-        #region DETECT CAM - 3D OR 2D
-        if (GameManager.Manager.isCam3DActive)
-        {
-            //Mover el taco en entorno 3D
-            MoveTaco(cam3D.transform.position);
-        }
-        else
-        {
-            //Mover el taco en entorno 2D - TopDown
-            MoveTaco(camTopDown.ScreenToWorldPoint(Input.mousePosition));
+            controlsPanel.SetActive(!controlsPanel.activeInHierarchy); //Si está activado se desactiva, y viceversa
         }
         #endregion
     }
@@ -101,6 +84,22 @@ public class Taco : MonoBehaviour
         }
     }
 
+    private void VerifyCameraMode()
+    {
+        #region DETECT CAM - 3D OR 2D
+        if (GameManager.Manager.isCam3DActive)
+        {
+            //Mover el taco en entorno 3D
+            MoveTaco(cam3D.transform.position);
+        }
+        else
+        {
+            //Mover el taco en entorno 2D - TopDown
+            MoveTaco(camTopDown.ScreenToWorldPoint(Input.mousePosition));
+        }
+        #endregion
+    }
+
     private void MoveTaco(Vector3 _targetPos)
     {
         Vector3 allowedPos = new Vector3(_targetPos.x, 1f, _targetPos.z) - whiteBallRb.transform.position;
@@ -109,7 +108,7 @@ public class Taco : MonoBehaviour
         tacoPos.transform.position = whiteBallRb.transform.position + allowedPos;
     }
 
-    public static Vector3 ClampMagnitude(Vector3 _vectorToClamp, float minMagnitude, float maxMagnitude)
+    private Vector3 ClampMagnitude(Vector3 _vectorToClamp, float minMagnitude, float maxMagnitude)
     {
         float vecMagnitude = _vectorToClamp.magnitude;
         if (vecMagnitude < minMagnitude)

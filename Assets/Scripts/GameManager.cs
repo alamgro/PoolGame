@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     private static GameManager _instance;
     public static GameManager Manager { get { return _instance; } }
     #endregion
-    public string Escena;
+    public string escena;
     public GameObject cam3D;
     public GameObject cam3DController;
 
@@ -29,11 +29,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        cam3D.SetActive(false);
-    }
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.R))
@@ -41,22 +36,25 @@ public class GameManager : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
-        if (Input.GetKeyDown(KeyCode.C))
+        if (cam3D)
         {
-            isCam3DActive = !cam3D.activeInHierarchy;
-            cam3D.SetActive(isCam3DActive);
-            //Cursor.visible = !isCam3DActive; //Si la cámara 3D está desactivada, se activa el cursor
-
-            if (isCam3DActive)
+            if (Input.GetKeyDown(KeyCode.C))
             {
-                Cursor.lockState = CursorLockMode.Locked;
-            }
-            else
-            {
-                Cursor.lockState = CursorLockMode.None;
-            }
+                isCam3DActive = !cam3D.activeInHierarchy;
+                cam3D.SetActive(isCam3DActive);
+                //Cursor.visible = !isCam3DActive; //Si la cámara 3D está desactivada, se activa el cursor
 
+                if (isCam3DActive)
+                {
+                    Cursor.lockState = CursorLockMode.Locked;
+                }
+                else
+                {
+                    Cursor.lockState = CursorLockMode.None;
+                }
+            }
         }
+        
 
         /*
         //Esto es para poder mover la cámara 3D solo si presionamos click derecho
@@ -70,9 +68,17 @@ public class GameManager : MonoBehaviour
         }*/
     }
 
+    //Stop a ball or gameobject with Rigidbody from moving
+    public void StopBall(Rigidbody _rb)
+    {
+        _rb.velocity = Vector3.zero;
+        _rb.angularVelocity = Vector3.zero;
+        _rb.Sleep();
+    }
+
     public void CambioEscena() 
     {
-        SceneManager.LoadScene(Escena);
+        SceneManager.LoadScene(escena);
     }
 
     
